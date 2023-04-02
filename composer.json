@@ -1,0 +1,45 @@
+{
+    "name": "yesccx/better-laravel",
+    "type": "library",
+    "description": "Better Laravel",
+    "keywords": [
+        "laravel",
+        "Better Laravel",
+        "yesccx"
+    ],
+    "homepage": "https://github.com/yesccx/better-laravel",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Yesccx\\BetterLaravel\\": "src/"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
+    },
+    "authors": [
+        {
+            "name": "yesccx",
+            "email": "yes.ccx@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^8.1.0",
+        "laravel/framework": "^9.0"
+    },
+    "require-dev": {
+        "ext-json": "*"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Yesccx\\BetterLaravel\\BetterLaravelServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
