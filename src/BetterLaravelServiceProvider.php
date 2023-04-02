@@ -107,15 +107,18 @@ class BetterLaravelServiceProvider extends ServiceProvider
      */
     protected function registerModuleRoutes(): void
     {
-        if ($this->app->runningInConsole()) {
+        if ($this->app instanceof CachesRoutes && $this->app->routesAreCached()) {
             return;
         }
 
-        if (!($this->app instanceof CachesRoutes && $this->app->routesAreCached())) {
-            Route::prefix('api')
-                ->middleware('api')
-                ->group(FileCollector::scan('routes/modules'));
-        }
+        transform(
+            config('better-laravel.http.route_scanning', []),
+            function ($routeScanning) {
+                foreach ($routeScanning as $data) {
+                    Route::group($data['options'], FileCollector::scan($data['path']));
+                }
+            }
+        );
     }
 
     /**

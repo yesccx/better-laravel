@@ -7,6 +7,24 @@ return [
     'date_format' => env('YBL_DATE_FORMAT', 'Y-m-d H:i:s'),
 
     /**
+     * Http模块
+     */
+    'http' => [
+        /**
+         * 路由扫描
+         */
+        'route_scanning' => [
+            [
+                'path'    => 'routes/modules',
+                'options' => [
+                    'prefix'     => 'api',
+                    'middleware' => 'api',
+                ],
+            ],
+        ],
+    ],
+
+    /**
      * 异常处理
      */
     'exception' => [
