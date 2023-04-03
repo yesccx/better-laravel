@@ -7,11 +7,12 @@ namespace Yesccx\BetterLaravel\Rules;
 use Yesccx\BetterLaravel\Rules\BaseRule;
 
 /**
- * 数组id集验证
+ * 字符串数组id集验证
  */
-final class ArrayIds implements BaseRule
+class StringArrayIdsRule implements BaseRule
 {
     /**
+     * @param string $separator 分隔符
      * @param bool $allowZero 值允许为0
      * @param bool $allowNegativeNumber 值允许为负数
      * @param bool $allowFloatNumber 值允许浮点数
@@ -20,6 +21,7 @@ final class ArrayIds implements BaseRule
      * @return void
      */
     public function __construct(
+        protected string $separator = ',',
         protected bool $allowZero = false,
         protected bool $allowNegativeNumber = false,
         protected bool $allowFloatNumber = false,
@@ -37,23 +39,27 @@ final class ArrayIds implements BaseRule
      */
     public function passes($attribute, $value)
     {
-        if (!is_array($value)) {
+        if (!is_string($value)) {
             return false;
-        } elseif (empty($value)) {
+        } elseif ($value === '') {
             return true;
-        } elseif ($this->allowRepeat && collect($value)->duplicatesStrict()->isNotEmpty()) {
+        }
+
+        try {
+            $value = array_map(
+                fn ($item) => trim($item) + 0,
+                explode($this->separator, $value),
+            );
+        } catch (\Throwable) {
             return false;
         }
 
-        return collect($value)->every(
-            fn ($item)                                     => match (true) {
-                !is_numeric($item)                         => false,
-                !$this->allowZero && empty($item)          => false,
-                !$this->allowNegativeNumber && $item < 0   => false,
-                !$this->allowFloatNumber && !is_int($item) => false,
-                default                                    => true
-            }
-        );
+        return (new ArrayIds(
+            allowZero: $this->allowZero,
+            allowNegativeNumber: $this->allowNegativeNumber,
+            allowFloatNumber: $this->allowFloatNumber,
+            allowRepeat: $this->allowRepeat
+        ))->passes($attribute, $value);
     }
 
     /**
