@@ -92,17 +92,23 @@ class Responder implements HttpResponderContract
      * 响应异常信息
      *
      * @param \Throwable $e
+     * @param array $options
      *
      * @return JsonResponse
      */
-    public function responseException(\Throwable $e): JsonResponse
+    public function responseException(\Throwable $e, array $options = []): JsonResponse
     {
+        $config = array_merge(config('better-laravel.exception', []), $options);
+
         return $this->responseError(
-            message: match (config('better-laravel.exception.cover_reason')) {
-                false   => $e->getMessage() . '(' . $e->getFile() . ':' . $e->getLine() . ')',
-                default => $e->getMessage()
+            message: match (true) {
+                !$config['ignore_tracks'] => "{$e->getMessage()}({$e->getFile()}:{$e->getLine()})",
+                default                   => $config['ignored_summary'] ?: '系统错误'
             },
-            code: $e->getCode() ?: ResponseCode::ERROR_CODE
+            code: match (true) {
+                (bool) $config['use_exception_code'] => $e->getCode() ?: ResponseCode::ERROR_CODE,
+                default                              => ResponseCode::ERROR_CODE
+            }
         );
     }
 

@@ -19,6 +19,8 @@ trait RenderHttpResponse
      */
     public function render($request)
     {
-        return app(HttpResponderContract::class)->responseException($this);
+        return app(HttpResponderContract::class)->responseException($this, [
+            'ignore_tracks' => false
+        ]);
     }
 }

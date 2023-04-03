@@ -29,16 +29,28 @@ return [
      */
     'exception' => [
         /**
-         * 遮掩异常细节
+         * 忽略异常栈信息
          *
          * 默认由app.debug控制
          */
-        'cover_reason' => config('YBL_EX_COVER', !config('app.debug', true)),
+        'ignore_tracks' => env('YBL_EX_IGNORE_TRACKS', !config('app.debug', true)),
 
         /**
-         * 描述遮掩信息
+         * 忽略异常后的描述
          */
-        'summary_cover' => config('YBL_EX_SUMMARY_COVER', '系统错误'),
+        'ignored_summary' => env('YBL_EX_IGNORED_SUMMARY', '系统错误'),
+
+        /**
+         * Missing异常描述
+         */
+        'missing_summary' => env('YBL_EX_MISSING_SUMMARY', '内容不存在'),
+
+        /**
+         * 使用异常错误码作为HTTP响应码
+         * PS: 请谨慎开启
+         */
+        'use_exception_code' => env('YBL_EX_USE_EXCEPTION_CODE', false),
+    ],
 
         /**
          * 描述Missing异常信息

@@ -5,8 +5,10 @@ declare(strict_types = 1);
 namespace Yesccx\BetterLaravel;
 
 use Illuminate\Contracts\Debug\ExceptionHandler;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Yesccx\BetterLaravel\Contracts\HttpResponderContract;
@@ -36,22 +38,33 @@ class BetterLaravelApplicationServiceProvider extends ServiceProvider
             return;
         }
 
-        $config = config('better-laravel.exception', []);
-
         /** @var \Illuminate\Foundation\Exceptions\Handler $exceptionHandler */
         $exceptionHandler = $this->app->make(ExceptionHandler::class);
 
-        // 捕获路由missing
+        /** @var \Yesccx\BetterLaravel\Http\Responder $httpResponser */
+        $httpResponser = $this->app->make(HttpResponderContract::class);
+
+        // 捕获路由missing异常
         $exceptionHandler->renderable(
-            fn (NotFoundHttpException | MethodNotAllowedHttpException $e, $request) => app(HttpResponderContract::class)->responseError($config['summary_missing'] ?: '内容不存在')
+            fn (NotFoundHttpException | MethodNotAllowedHttpException $e, $request) => $httpResponser->responseError(
+                match (true) {
+                    // ModelNotFoundException类会被转换为NotFoundHttpException，因此在需要额外处理
+                    $e?->getPrevious() instanceof ModelNotFoundException => $e?->getPrevious()?->getMessage(),
+                    default                                              => config('better-laravel.exception.missing_summary', '内容不存在')
+                }
+            )
         );
 
-        // 捕获业务异常
+        // 捕获表单验证异常
         $exceptionHandler->renderable(
-            fn (\Throwable $e, $request) => match (true) {
-                !$config['cover_reason'] => app(HttpResponderContract::class)->responseException($e),
-                default                  => app(HttpResponderContract::class)->responseError($config['summary_cover'] ?: '系统错误')
-            }
+            fn (ValidationException $e, $request) => $httpResponser->responseError(
+                $e?->validator?->errors()?->first() ?? config('better-laravel.exception.ignored_summary', '系统错误')
+            )
+        );
+
+        // 捕获不明确的其它异常
+        $exceptionHandler->renderable(
+            fn (\Throwable $e, $request) => $httpResponser->responseException($e)
         );
     }
 }

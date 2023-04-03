@@ -6,7 +6,6 @@ namespace Yesccx\BetterLaravel\Validation;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Yesccx\BetterLaravel\Validation\Traits\ValidatorDefaultAuthorize;
-use Yesccx\BetterLaravel\Validation\Traits\ValidatorFailedValidation;
 use Yesccx\BetterLaravel\Validation\Traits\ValidatorFetchValidated;
 use Yesccx\BetterLaravel\Validation\Traits\ValidatorScenes;
 
@@ -19,7 +18,7 @@ use Yesccx\BetterLaravel\Validation\Traits\ValidatorScenes;
  */
 abstract class BaseRequest extends FormRequest
 {
-    use ValidatorDefaultAuthorize, ValidatorFailedValidation, ValidatorScenes, ValidatorFetchValidated;
+    use ValidatorDefaultAuthorize, ValidatorScenes, ValidatorFetchValidated;
 
     /**
      * 表示验证器是否应在第一个规则失败时停止。
