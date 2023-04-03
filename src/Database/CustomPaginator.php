@@ -6,11 +6,12 @@ namespace Yesccx\BetterLaravel\Database;
 
 use Illuminate\Pagination\Paginator;
 use Yesccx\BetterLaravel\Database\Supports\PaginatorOptions;
+use Yesccx\BetterLaravel\Contracts\CustomPaginatorContract;
 
 /**
  * 自定义简单分页器
  */
-final class CustomPaginator extends Paginator
+class CustomPaginator extends Paginator implements CustomPaginatorContract
 {
     /**
      * 标识是否取回所有数据

@@ -6,8 +6,8 @@ namespace Yesccx\BetterLaravel\Database\Supports;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
-use Yesccx\BetterLaravel\Database\CustomPaginator;
-use Yesccx\BetterLaravel\Database\CustomLengthAwarePaginator;
+use Yesccx\BetterLaravel\Contracts\CustomLengthAwarePaginatorContract;
+use Yesccx\BetterLaravel\Contracts\CustomPaginatorContract;
 
 /**
  * 数据库查询方法宏扩展
@@ -24,7 +24,7 @@ final class BuilderMacro
          * @param null|int $page 页码
          * @param bool $forceFetchAll 是否强制获取全部
          * @param array $options 扩展选项 @see PaginatorOptions::data
-         * @return CustomLengthAwarePaginator
+         * @return CustomLengthAwarePaginatorContract
          */
         return function (
             bool $allowFetchAll = false,
@@ -32,7 +32,7 @@ final class BuilderMacro
             ?int $page = null,
             bool $forceFetchAll = false,
             array $options = []
-        ): CustomLengthAwarePaginator {
+        ): CustomLengthAwarePaginatorContract {
             /** @var Builder $this */
 
             $request = request();
@@ -51,9 +51,9 @@ final class BuilderMacro
             $perPage = $perPage ?? (int) $request->input($options['per_page_field'], $options['per_page']);
             $perPage = min(max($perPage, 1), $options['max_per_page']);
 
-            return new CustomLengthAwarePaginator(
-                match ($fetchAll) {
-                    true => $this->paginator(
+            return app(CustomLengthAwarePaginatorContract::class, [
+                'paginate' => match ($fetchAll) {
+                    true   => $this->paginator(
                         items: $this->get(),
                         total: 0,
                         perPage: 1,
@@ -62,8 +62,8 @@ final class BuilderMacro
                     ),
                     default => $this->paginate(perPage: $perPage, page: $page)
                 },
-                $fetchAll
-            );
+                'fetchAll' => $fetchAll,
+            ]);
         };
     }
 
@@ -77,7 +77,7 @@ final class BuilderMacro
          * @param null|int $page 页码
          * @param bool $forceFetchAll 是否强制获取全部
          * @param array $options 扩展选项 @see PaginatorOptions::data
-         * @return CustomPaginator
+         * @return CustomPaginatorContract
          */
         return function (
             bool $allowFetchAll = false,
@@ -85,7 +85,7 @@ final class BuilderMacro
             ?int $page = null,
             bool $forceFetchAll = false,
             array $options = []
-        ): CustomPaginator {
+        ): CustomPaginatorContract {
             /** @var Builder $this */
 
             $request = request();
@@ -104,9 +104,9 @@ final class BuilderMacro
             $perPage = $perPage ?? (int) $request->input($options['per_page_field'], $options['per_page']);
             $perPage = min(max($perPage, 1), $options['max_per_page']);
 
-            return new CustomPaginator(
-                match ($fetchAll) {
-                    true => $this->simplePaginator(
+            return app(CustomPaginatorContract::class, [
+                'paginate' => match ($fetchAll) {
+                    true   => $this->simplePaginator(
                         items: $this->get(),
                         perPage: 1,
                         currentPage: 1,
@@ -114,8 +114,8 @@ final class BuilderMacro
                     ),
                     default => $this->simplePaginate(perPage: $perPage, page: $page)
                 },
-                $fetchAll
-            );
+                'fetchAll' => $fetchAll,
+            ]);
         };
     }
 

@@ -64,8 +64,12 @@ class BetterLaravelServiceProvider extends ServiceProvider
      */
     protected function registerDependencies()
     {
-        foreach (config('better-laravel.dependencies', []) as $contract => $target) {
-            $this->app->singleton($contract, $target);
+        foreach (config('better-laravel.singletons', []) as $contract => $target) {
+            $this->app->singletonIf($contract, $target);
+        }
+
+        foreach (config('better-laravel.binds', []) as $contract => $target) {
+            $this->app->bind($contract, $target);
         }
     }
 

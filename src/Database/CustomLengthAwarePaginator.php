@@ -6,11 +6,12 @@ namespace Yesccx\BetterLaravel\Database;
 
 use Illuminate\Pagination\LengthAwarePaginator;
 use Yesccx\BetterLaravel\Database\Supports\PaginatorOptions;
+use Yesccx\BetterLaravel\Contracts\CustomLengthAwarePaginatorContract;
 
 /**
  * 自定义分页器
  */
-final class CustomLengthAwarePaginator extends LengthAwarePaginator
+class CustomLengthAwarePaginator extends LengthAwarePaginator implements CustomLengthAwarePaginatorContract
 {
     /**
      * 标识是否取回所有数据
@@ -102,8 +103,6 @@ final class CustomLengthAwarePaginator extends LengthAwarePaginator
         $page = $page ?? (int) $request->input($options['page_field'], $options['page']);
         $perPage = $perPage ?? (int) $request->input($options['per_page_field'], $options['per_page']);
         $perPage = min(max($perPage, 1), $options['max_per_page']);
-
-        $total = $items->count();
 
         return new self(
             new LengthAwarePaginator(

@@ -52,16 +52,21 @@ return [
         'use_exception_code' => env('YBL_EX_USE_EXCEPTION_CODE', false),
     ],
 
+    /**
+     * 类映射
+     */
+    'binds' => [
         /**
-         * 描述Missing异常信息
+         * 数据库分页逻辑
          */
-        'summary_missing' => config('YBL_EX_SUMMARY_MISSING', '内容不存在'),
+        \Yesccx\BetterLaravel\Contracts\CustomLengthAwarePaginatorContract::class => \Yesccx\BetterLaravel\Database\CustomLengthAwarePaginator::class,
+        \Yesccx\BetterLaravel\Contracts\CustomPaginatorContract::class            => \Yesccx\BetterLaravel\Database\CustomPaginator::class,
     ],
 
     /**
-     * 类依赖映射
+     * 单例映射
      */
-    'dependencies' => [
+    'singletons' => [
         /**
          * 处理HTTP响应逻辑
          */

@@ -9,8 +9,8 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 
 /**
  * @method static QueryBuilder|EloquentBuilder|static|$this query() {@see \Illuminate\Database\Eloquent::query}
- * @method \Yesccx\BetterLaravel\Database\CustomPaginator customPaginate(bool $allowFetchAll = false, ?int $perPage = null, ?int $page = null, bool $forceFetchAll = false, array $options = []) 自定义分页
- * @method \Yesccx\BetterLaravel\Database\CustomPaginator customSimplePaginate(bool $allowFetchAll = false, ?int $perPage = null, ?int $page = null, bool $forceFetchAll = false, array $options = []) 自定义简单分页
+ * @method \Yesccx\BetterLaravel\Contracts\CustomLengthAwarePaginatorContract customPaginate(bool $allowFetchAll = false, ?int $perPage = null, ?int $page = null, bool $forceFetchAll = false, array $options = []) 自定义分页
+ * @method \Yesccx\BetterLaravel\Contracts\CustomPaginatorContract customSimplePaginate(bool $allowFetchAll = false, ?int $perPage = null, ?int $page = null, bool $forceFetchAll = false, array $options = []) 自定义简单分页
  * @method QueryBuilder|EloquentBuilder|static|$this whereLike(mixed $fields, mixed $keywords, int $mode = 0) LIKE查询
  * @method QueryBuilder|EloquentBuilder|static|$this whenLike(mixed $fields, mixed $keywords, int $mode = 0) (when)LIKE查询
  * @method QueryBuilder|EloquentBuilder|static|$this whereToday(mixed $field) 查询是否为当日
