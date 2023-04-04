@@ -7,7 +7,7 @@
 <a href="https://packagist.org/packages/yesccx/better-laravel"><img alt="Total Downloads" src="https://img.shields.io/packagist/dt/yesccx/better-laravel.svg?maxAge=2592000" style="max-width:100%;"></a>
 <a href="https://packagist.org/packages/yesccx/better-laravel"><img alt="License" src="https://img.shields.io/packagist/l/yesccx/better-laravel.svg?maxAge=2592000" style="max-width:100%;"></a></p>
 
-## 目录
+# 目录
 - [目录](#目录)
 - [安装](#安装)
   - [运行环境](#运行环境)
@@ -79,16 +79,16 @@
 - [License](#license)
 
 
-## 安装
+# 安装
 
-### 运行环境
+## 运行环境
 
 | 运行环境要求           |
 | ---------------------- |
 | PHP ^8.1.0             |
 | Laravel Framework ^9.0 |
 
-### 通过Composer引入依赖包
+## 通过Composer引入依赖包
 
 通过终端进入项目根目录，执行以下命令引入依赖包：
 
@@ -96,7 +96,7 @@
 > composer require yesccx/better-laravel:1.x
 ```
 
-### 初始化安装
+## 初始化安装
 
 `Better-Laravel` 支持一系列配置参数，如 `默认时间格式` 等，更多配置项参考[配置项](#配置项)章节，通过以下命令进行初始化安装操作：
 
@@ -106,11 +106,11 @@
 
 > 初始化之后会默认引入使用服务提供者 `App\Providers\BetterLaravelProvider`，后续可在该提供者内部做更多的定制化处理。
 
-## 基础功能
+# 基础功能
 
-### 路由
+## 路由
 
-#### 模块路由
+### 模块路由
 
 通常情况下，我们会将路由定义在 `routes/api.php` 文件内。然而随着项目的不断迭代，定义的路由也会越来越多。为了更好地管理这些路由，我们可以选择将它们按照功能模块拆分，并单独定义在不同的路由文件中。
 例如，我们可以将用户相关的路由定义在 `routes/modules/user.php` 文件中，将订单相关的路由定义在 `routes/modules/order.php` 中等。这种做法可以有效减少单个路由文件内的接口数量，以清晰地管理项目的接口。
@@ -159,9 +159,9 @@ Route::group([
 
 > 通过这种方式定义的路由，不会影响 `route:cache` 缓存生成。
 
-### 命令行
+## 命令行
 
-#### 迁移文件转换为DDL语句
+### 迁移文件转换为DDL语句
 
 `Laravel` 允许我们利用 `迁移文件` 进行表结构调整，但有时候可能不方便直连数据库执行迁移文件，又或者想备份迁移文件所执行的具体 `DDL` 语句，此时可以借助 `migrate:to-sql` 脚本将 `迁移文件` 转换为 `DDL` 语句。
 
@@ -203,7 +203,7 @@ Route::group([
 > php artisan migrate:to-sql --path=2023_03_15 >> migrate.sql
 ```
 
-#### Laravel部署优化
+### Laravel部署优化
 
 当项目部署至生产环境后，为了提升应用的性能，我们可以利用 `Laravel` 中提供的一系列命令进行配置优化，例如 `route:cache`、`config:cache` 等（具体参考 [Laravel部署章节](https://learnku.com/docs/laravel/9.x/deployment/12204#a9f94d)）。`Better-Laravel` 中提供了 `optimize:all` 脚本，可以在生产环境中快速优化整个应用程序，该脚本会执行一系列优化操作，以提高应用程序的性能和响应速度。
 
@@ -221,7 +221,7 @@ Route::group([
 
 > 如果项目是运行在 `Docker` 容器内的，可以将脚本定义到入口命令 `CMD` 中执行。这样做的好处在于，每次容器启动时都会自动执行优化脚本。
 
-### 异常处理
+## 异常处理
 
 `Better-Laravel` 中统一进行了异常处理，并以标准的响应方式返回异常信息([`Responser`](#请求响应(Responser)))，从而提高了应用的安全和规范性。其中捕获的 `Laravel内部异常` 有：
 
@@ -247,13 +247,13 @@ Route::group([
 
 > 默认情况下会自动记录异常原因至日志文件中。
 
-### Traits
+## Traits
 
-#### InstanceMake
+### InstanceMake
 
 为类引入 `Yesccx\BetterLaravel\Traits\InstanceMake` Trait后，赋于类快速实例化的能力。`InstanceMake` 中包含三种实例化类的方式。
 
-##### Class::make
+#### Class::make
 
 非单例/支持构建函数传参/不支持构造函数依赖注入:
 
@@ -269,7 +269,7 @@ class UserService {
 UserService::make(['id' => 1]);
 ```
 
-##### Class::resolve
+#### Class::resolve
 
 非单例/不支持构建函数传参/支持构造函数依赖注入:
 
@@ -286,7 +286,7 @@ $user = UserService::resolve();
 $user->model->find(['id' => 1]);
 ```
 
-##### Class::instance
+#### Class::instance
 
 单例/不支持构建函数传参/支持构造函数依赖注入:
 
@@ -310,7 +310,7 @@ UserService::resolve(force: true);
 
 ```
 
-#### InitializeTraits
+### InitializeTraits
 
 在 `PHP` 中，我们可以使用 `Trait` 来扩展类的功能。然而，与类不同的是，`Trait` 没有类似构造函数的初始化方法，这使得在使用 `Trait` 时可能会面临一些困难。为了解决这个问题，我们可以利用 `Yesccx\BetterLaravel\Traits\InitializeTraits` 这个工具包，将初始化能力引入到 `Trait` 中。这样，我们就可以在使用 `Trait` 时轻松地进行初始化操作，提高代码的可读性和可维护性。
 
@@ -361,15 +361,15 @@ class User {
 }
 ```
 
-### BaseService
+## BaseService
 
 `Better-Laravel` 中提供了 `Service` 层基类 `Yesccx\BetterLaravel\Service\BaseService`，其中引入了 `InstanceMake Trait`。
 
 业务项目开发过程中，可以示情况进行继承使用。
 
-## 数据库
+# 数据库
 
-### 分页查询
+## 分页查询
 
 在 `Laravel` 中，我们可以使用 `paginate`、`simplePaginate` 等方法进行分页查询。但是这些方法返回的结果包含了一些非必要的信息，并且其数据结构与常规的 `API` 响应结构不一致。
 
@@ -379,7 +379,7 @@ class User {
 
 > 如果需要进行深度定制，比如重新定义分页输出结构，我们可以通过重写 `Yesccx\BetterLaravel\Database\CustomLengthAwarePaginator` 类的相关方法，并在 `better-laravel.binds` 配置文件中重新定义映射关系。
 
-#### 普通分页查询
+### 普通分页查询
 
 如果想在 `Better-Laravel` 中进行普通分页查询，我们可以使用 `customPaginate` 方法。以下是一个示例参考：
 
@@ -478,7 +478,7 @@ function (
 ): CustomLengthAwarePaginatorContract;
 ```
 
-#### 简单分页查询
+### 简单分页查询
 
 与 `Laravel` 中的 `simplePaginate` 方法对应，`Better-Laravel` 中也提供了简单分页查询方法 `customSimplePaginate`，该方法与 `customPaginate` 的用法和原理非常相似。
 
@@ -504,7 +504,7 @@ function (
 ): CustomPaginatorContract;
 ```
 
-#### 自定义分页数据
+### 自定义分页数据
 
 当我们需要用自己的数据进行分页时，可以使用 `CustomLengthAwarePaginator` 分页器来生成标准分页器对象。这个分页器提供了一个静态方法 `resolve`，用法与 `customPaginate` 方法类似，同样的也可以手动传入 `per_page` 、`page` 、`fetch_all` 等参数，示例如下：
 
@@ -512,7 +512,7 @@ function (
 $list = \Yesccx\BetterLaravel\Database\CustomLengthAwarePaginator::resolve(items: [], total: 30, perPage: 15, page: 1);
 ```
 
-#### 空分页
+### 空分页
 
 有时候我们需要构造一个空的分页对象，比如在某些特定场景下，如果接口返回空数据或者查询结果为空，我们需要构造一个空的分页器对象来给前端展示，这时可以使用 `CustomLengthAwarePaginator` 分页器中的静态方法 `toEmpty` 来构造一个不进行实际查询的空分页对象。示例如下：
 
@@ -520,7 +520,7 @@ $list = \Yesccx\BetterLaravel\Database\CustomLengthAwarePaginator::resolve(items
 $list = \Yesccx\BetterLaravel\Database\CustomLengthAwarePaginator::toEmpty();
 ```
 
-### Builder查询
+## Builder查询
 
 `Better-Laravel` 中为 `Builder` 类扩展了更多的查询方法，这些方法都是通过 `marco` 进行扩展，因此也支持查询方法链式调用，示例如下：
 
@@ -532,7 +532,7 @@ User::query()->where('status', 1)->whereToday('register_time')->first();
 DB::table('users')->where('status', 1)->whereToday('register_time')->first();
 ```
 
-#### customPaginate
+### customPaginate
 
 自定义分页
 
@@ -556,7 +556,7 @@ function (
 ): CustomLengthAwarePaginatorContract;
 ```
 
-#### customSimplePaginate
+### customSimplePaginate
 
 自定义简单分页
 
@@ -580,7 +580,7 @@ function (
 ): CustomPaginatorContract;
 ```
 
-#### whereLike
+### whereLike
 
 LIKE查询
 
@@ -597,7 +597,7 @@ LIKE查询
 function (mixed $fields, mixed $keywords, int $mode = 0): Builder;
 ```
 
-#### whenLike
+### whenLike
 
 (when)LIKE查询
 
@@ -614,7 +614,7 @@ function (mixed $fields, mixed $keywords, int $mode = 0): Builder;
 function (mixed $fields, mixed $keywords, int $mode = 0): Builder;
 ```
 
-#### whereToday
+### whereToday
 
 查询是否为当日
 
@@ -631,11 +631,11 @@ function (mixed $fields, mixed $keywords, int $mode = 0): Builder;
 function (mixed $field): Builder;
 ```
 
-#### whereThisDay
+### whereThisDay
 
 查询是否为当日，为 [whereToday](#whereToday) 的别名方法
 
-#### whereInDay
+### whereInDay
 
 查询是否为某日
 
@@ -651,7 +651,7 @@ function (mixed $field): Builder;
 function (mixed $field, mixed $day): Builder;
 ```
 
-#### whereThisWeek
+### whereThisWeek
 
 查询是否为本周
 
@@ -666,7 +666,7 @@ function (mixed $field, mixed $day): Builder;
 function (mixed $field): Builder;
 ```
 
-#### whereThisMonth
+### whereThisMonth
 
 查询是否为本月
 
@@ -681,7 +681,7 @@ function (mixed $field): Builder;
 function (mixed $field): Builder;
 ```
 
-#### whereInMonth
+### whereInMonth
 
 查询是否为某月
 
@@ -697,7 +697,7 @@ function (mixed $field): Builder;
 function (mixed $field, mixed $month): Builder;
 ```
 
-#### whereThisYear
+### whereThisYear
 
 查询是否为本年
 
@@ -712,7 +712,7 @@ function (mixed $field, mixed $month): Builder;
 function (mixed $field): Builder;
 ```
 
-#### whereInYear
+### whereInYear
 
 查询是否为某年
 
@@ -728,7 +728,7 @@ function (mixed $field): Builder;
 function (mixed $field, mixed $year): Builder;
 ```
 
-#### whereGtDate
+### whereGtDate
 
 查询是否大于指定日期
 
@@ -744,7 +744,7 @@ function (mixed $field, mixed $year): Builder;
 function (mixed $field, mixed $date = null): Builder;
 ```
 
-#### whereGteDate
+### whereGteDate
 
 查询是否大于等于指定日期
 
@@ -760,7 +760,7 @@ function (mixed $field, mixed $date = null): Builder;
 function (mixed $field, mixed $date = null): Builder;
 ```
 
-#### whereLtDate
+### whereLtDate
 
 查询是否小于指定日期
 
@@ -776,7 +776,7 @@ function (mixed $field, mixed $date = null): Builder;
 function (mixed $field, mixed $date = null): Builder;
 ```
 
-#### whereLteDate
+### whereLteDate
 
 查询是否小于等于指定日期
 
@@ -792,7 +792,7 @@ function (mixed $field, mixed $date = null): Builder;
 function (mixed $field, mixed $date = null): Builder;
 ```
 
-#### whereBetweenDate
+### whereBetweenDate
 
 查询是在指定日期范围内
 
@@ -810,9 +810,9 @@ function (mixed $field, mixed $date = null): Builder;
 function (string $field, mixed $startDate = null, mixed $endDate = null, bool $forceFullDay = false): Builder;
 ```
 
-## HTTP
+# HTTP
 
-### 请求响应(Responser)
+## 请求响应(Responser)
 
 针对常见的接口开发场景，封装了快速响应 `成功`、`失败`、`异常`、`数据` 等方法，并统一了响应结构：
 
@@ -826,7 +826,7 @@ function (string $field, mixed $startDate = null, mixed $endDate = null, bool $f
 
 > 如果想调整默认响应结构或扩展其功能，可以对 `\Yesccx\BetterLaravel\Http\Responder` 类进行重写，并在 `better-laravel.binds` 配置文件中重新定义映射关系。
 
-#### responseSuccess
+### responseSuccess
 
 响应成功信息
 
@@ -851,7 +851,7 @@ responseSuccess(
 ): JsonResponse;
 ```
 
-#### responseError
+### responseError
 
 响应失败信息
 
@@ -876,7 +876,7 @@ responseError(
 ): JsonResponse;
 ```
 
-#### responseData
+### responseData
 
 响应数据信息
 
@@ -905,7 +905,7 @@ responseData(
 ): JsonResponse;
 ```
 
-#### responseException
+### responseException
 
 响应异常信息
 
@@ -921,8 +921,7 @@ responseData(
 public function responseException(\Throwable $e, array $options = []): JsonResponse;
 ```
 
-
-### 控制器基类
+## 控制器基类
 
 控制器是 `Laravel` 中的核心组件之一，其在 `HTTP` 请求处理过程中扮演着至关重要的角色。控制器通常需要接收请求参数、执行相应的逻辑并将结果返回给客户端。为了更好地实现快速接口开发，我们可以利用 `Better-Laravel` 中的控制器基类 `Yesccx\BetterLaravel\Http\BaseController`。
 
@@ -932,7 +931,7 @@ public function responseException(\Throwable $e, array $options = []): JsonRespo
 
 使用 `Yesccx\BetterLaravel\Http\BaseController` 基类能够有效地提高代码可读性和可维护性，同时也可以简化接口开发的过程。
 
-#### 接口响应(Response)
+### 接口响应(Response)
 
 当业务控制器继承基类 `Yesccx\BetterLaravel\Http\BaseController` 后，可以直接调用由 [`Responser`](#请求响应(Responser)) 提供的相关方法，示例如下：
 
@@ -985,7 +984,7 @@ $userList = User::query()->customPaginate();
 $this->responseData($userList, UserResource::class);
 ```
 
-#### 入参类型转换(TypeTransfrom)
+### 入参类型转换(TypeTransfrom)
 
 通常我们在定义方法时都会声明其参数类型，所以往往我们在获取到 `Http` 请求参数后，都会显式的对其进行类型转换，以符合相关方法的调用要求。在 `Laravel` 中，我们可以通过 `Request` 类的 `get`、`input` 等方法获取入参，并手动将其转换为指定类型，如下所示：
 
@@ -1038,11 +1037,11 @@ $data = request()->fetchMany([
 | 字符串 | (s)string |
 | JSON   | (j)json   |
 
-### 表单验证
+## 表单验证
 
 `Laravel` 提供了多种验证传入应用程序的数据的方法。为确保安全性和规范性，建议为每个需要验证入参的接口创建表单验证类。
 
-#### 表单验证基类
+### 表单验证基类
 
 基于常见的开发场景，`Better-Laravel` 中已经准备好了表单验证基类 `Yesccx\BetterLaravel\Validation\BaseRequest`，用于快速创建可用的表单验证类。该基类默认开启了 `stopOnFirstFailure` 选项，表示在验证器验证的过程中遇到第一个规则失败时即停止，同时将表单请求授权验证 `authorize` 默认为通过。此外，还可以使用 `fetch` 或 `fetchMany` 方法，从验证通过的数据中获取并转换数据类型，这种能力继承自 `Request`。
 
@@ -1091,7 +1090,7 @@ public function login(AccountLoginRequest $request)
 }
 ```
 
-#### 验证场景
+### 验证场景
 
 为了减少验证规则类的重复定义，提高利用性，我们可以在表单验证类中定义验证场景。通过验证场景我们只需要在同一个验证类中定义好所有字段验证规则，再针对不同场景制定不同的验证字段。
 
@@ -1202,9 +1201,9 @@ public function scenes(): array
 ```
 
 
-### 验证规则
+## 验证规则
 
-#### ArrayIdsRule
+### ArrayIdsRule
 
 数组id集验证
 
@@ -1225,23 +1224,23 @@ public function __construct(
 );
 ```
 
-#### Base64Rule
+### Base64Rule
 
 base64验证
 
-#### IdCardRule
+### IdCardRule
 
 身份证号验证
 
-#### LandlinePhoneRule
+### LandlinePhoneRule
 
 固定电话验证
 
-#### PhoneRule
+### PhoneRule
 
 手机号验证
 
-#### StringArrayIdsRule
+### StringArrayIdsRule
 
 字符串数组id集验证
 
@@ -1264,7 +1263,7 @@ public function __construct(
 );
 ```
 
-#### SubManyRequestRule
+### SubManyRequestRule
 
 子表单集合验证
 
@@ -1279,7 +1278,7 @@ public function __construct(
 );
 ```
 
-#### SubRequestRule
+### SubRequestRule
 
 子表单验证
 
@@ -1294,27 +1293,27 @@ public function __construct(
 );
 ```
 
-## 配置项
+# 配置项
 
 `Better-Laravel` 的配置文件为 `better-laravel.php`，其中包含了 `异常处理`、`类依赖关系`、`默认时间格式` 等配置项。
 
-### date_format
+## date_format
 
 配置默认时间格式化，该格式将应用于以下内容：
 
 - `Carbon` 类的默认时间格式
 - `Model` 中的默认时间输出格式
 
-### http.route_scanning
+## http.route_scanning
 
 定义 `模块路由` 的扫描文件夹，可以定义多个。同时支持通过 `options` 配置路由参数。
 
 待补充完善...
 
-## 使用建议
+# 使用建议
 
 待补充完善...
 
-## License
+# License
 
 MIT
