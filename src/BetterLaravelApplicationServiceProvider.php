@@ -64,9 +64,12 @@ class BetterLaravelApplicationServiceProvider extends ServiceProvider
 
         // 捕获不明确的其它异常
         $exceptionHandler->renderable(
-            fn (\Throwable $e, $request) => $httpResponser->responseException($e, [
-                'ignore_tracks' => !collect($this->immediateExceptions())->contains(fn ($class) => $e instanceof $class),
-            ])
+            fn (\Throwable $e, $request) => $httpResponser->responseException(
+                $e,
+                collect($this->immediateExceptions())->contains(fn ($class) => $e instanceof $class)
+                    ? ['ignore_tracks' => false]
+                    : []
+            )
         );
     }
 
