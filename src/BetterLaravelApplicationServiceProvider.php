@@ -64,7 +64,19 @@ class BetterLaravelApplicationServiceProvider extends ServiceProvider
 
         // 捕获不明确的其它异常
         $exceptionHandler->renderable(
-            fn (\Throwable $e, $request) => $httpResponser->responseException($e)
+            fn (\Throwable $e, $request) => $httpResponser->responseException($e, [
+                'ignore_tracks' => !collect($this->immediateExceptions())->contains(fn ($class) => $e instanceof $class),
+            ])
         );
+    }
+
+    /**
+     * 立即响应的异常，不经过判断处理
+     *
+     * @return array
+     */
+    protected function immediateExceptions(): array
+    {
+        return [];
     }
 }

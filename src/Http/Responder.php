@@ -7,6 +7,7 @@ namespace Yesccx\BetterLaravel\Http;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
 use Yesccx\BetterLaravel\Contracts\HttpResponderContract;
+use Yesccx\BetterLaravel\Contracts\WithExceptionOptions;
 use Yesccx\BetterLaravel\Http\Supports\ResponseCode;
 use Yesccx\BetterLaravel\Traits\InstanceMake;
 
@@ -98,16 +99,25 @@ class Responder implements HttpResponderContract
      */
     public function responseException(\Throwable $e, array $options = []): JsonResponse
     {
-        $config = array_merge(config('better-laravel.exception', []), $options);
+        $exceptionOptions = match (true) {
+            $e instanceof WithExceptionOptions => $e->exceptionOptions(),
+            default                            => []
+        };
+
+        $options = array_merge(
+            config('better-laravel.exception', []),
+            $exceptionOptions,
+            $options
+        );
 
         return $this->responseError(
             message: match (true) {
-                !$config['ignore_tracks'] => "{$e->getMessage()}({$e->getFile()}:{$e->getLine()})",
-                default                   => $config['ignored_summary'] ?: '系统错误'
+                !$options['ignore_tracks'] => $e->getMessage(),
+                default                    => $options['ignored_summary'] ?: '系统错误'
             },
             code: match (true) {
-                (bool) $config['use_exception_code'] => $e->getCode() ?: ResponseCode::ERROR_CODE,
-                default                              => ResponseCode::ERROR_CODE
+                (bool) $options['use_exception_code'] => $e->getCode() ?: ResponseCode::ERROR_CODE,
+                default                               => ResponseCode::ERROR_CODE
             }
         );
     }

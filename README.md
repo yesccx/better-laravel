@@ -55,6 +55,7 @@
     - [whereLtDate](#whereltdate)
     - [whereLteDate](#whereltedate)
     - [whereBetweenDate](#wherebetweendate)
+    - [非严格格式查询](#非严格格式查询)
 - [HTTP](#http)
   - [请求响应(Responser)](#请求响应responser)
     - [responseSuccess](#responsesuccess)
@@ -227,25 +228,30 @@ Route::group([
 
 ## 异常处理
 
-`Better-Laravel` 中统一进行了异常处理，并以标准的响应方式返回异常信息([`Responser`](#请求响应(Responser)))，从而提高了应用的安全和规范性。其中捕获的 `Laravel内部异常` 有：
+在 `Better-Laravel` 中对异常类进行了统一的捕获处理，对异常信息进行脱敏后再以标准的接口响应方式响应异常信息([`Responser`](#请求响应(Responser)))，从而提高了应用的安全性和规范性。
+
+其中捕获的 `Laravel内部异常` 有：
 
 - `NotFoundHttpException`：请求的接口地址不存在异常；
 - `MethodNotAllowedHttpException`：请求方法不允许异常；
 - `ModelNotFoundException`：通过 `firstOrFail` 查询异常；
 - `ValidationException`：表单验证失败异常。
 
-除此之外还有 `Better-Laravel` 内部业务异常：
+对于 `NotFoundHttpException`、`MethodNotAllowedHttpException` 及 `ModelNotFoundException` 这类异常可以理解为应用 `missing` 异常，因此不会直接暴露异常原因，而是提供了默认的提示文案"内容不存在"。同时，我们还提供了 `better-laravel.exception.missing_summary` 配置来自定义提示文案。 对于 `ValidationException` 异常，为表单验证失败时的异常，我们会将其异常原因指定为验证规则的具体错误信息。
+
+其中捕获的 `Better-Laravel` 内部业务异常有：
 
 - `ApiService`：接口异常或业务异常
 - `ServiceService`：服务层异常
 
-为了更好地处理这些异常，我们对 `NotFoundHttpException`、`MethodNotAllowedHttpException` 和 `ModelNotFoundException` 异常进行了处理，这类异常可以理解为接口 `missing` 异常，因此不会直接暴露异常原因，而是提供了默认的提示信息"内容不存在"。同时，我们还提供了 `better-laravel.exception.missing_summary` 配置来自定义提示信息。
+对于这些异常，我们会直接返回异常原因，并且可以通过开启 `better-laravel.exception.use_exception_code` 使用 `异常码` 的功能，将`异常码` 作为接口响应体中的 `code` 码。
 
-对于 `ValidationException` 异常，我们会将其异常原因设置为验证规则的错误信息。
+除此之外的异常都被统称为 `其它未知异常`，因为来源不明确，为了防止意外暴露敏感信息，我们同样的会使用统一的提示文案 "系统错误"，此外我们还提供了 `better-laravel.exception.ignored_summary` 配置来自定义提示文案。在开发阶段，您可以通过开启 DEBUG 模式( `APP_DEBUG=true` ) 或者指定 `better-laravel.exception.ignore_tracks` 为 `false`，来显示 `其它未知异常` 的异常栈详情。
 
-对于 `Better-Laravel` 内部业务异常，我们会直接返回异常原因，并且可以通过开启 `better-laravel.exception.use_exception_code` 后，将`异常码` 作为接口响应体中的 `code` 码。
+但某些时候我们会自定义业务异常类，如果希望在捕获到这类异常后，将异常原因直接返回给客户端，我们可以通过以下方式进行：
 
-而对于 `其它异常`，因为来源不明确，为了防止暴露敏感信息，我们同样不会直接暴露异常原因，而是提供了默认的提示信息 "系统错误"。此外，我们还提供了 `better-laravel.exception.ignored_summary` 配置来自定义提示信息。在开发阶段，您可以通过开启 DEBUG 模式( `app_debug=true` ) 或者指定 `better-laravel.exception.ignore_tracks` 为 `false`，来显示 `其它异常` 的详细信息。
+- 方式一：业务异常类实现 `Yesccx\BetterLaravel\Contracts\WithExceptionOptions` 接口，并在 `exceptionOptions` 方法中指定不忽略异常栈详情 `["ignore_tracts" => false]` ；
+- 方式二：通过将业务异常类 声明至 `App\Providers\BetterLaravelProvider` 中的 `immediateExceptions` 方法内，该方法中声明的异常将不会忽略异常栈信息。
 
 如果您需要禁用这些异常处理逻辑或深度定制化异常处理逻辑，您可以选择在 `App\Providers\BetterLaravelProvider` 中移除这一部分处理逻辑。
 
