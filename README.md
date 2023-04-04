@@ -877,6 +877,24 @@ function (mixed $field, mixed $date = null): Builder;
 function (string $field, mixed $startDate = null, mixed $endDate = null, bool $forceFullDay = false): Builder;
 ```
 
+### 非严格格式查询
+
+默认情况下 `Laravel` 中的 `mysql` 连接配置启用了严格模式，此时会限制查询语句的执行：
+
+``` php
+User::query()->select(['id'])->groupBy('name')->first();
+```
+
+例如执行上述查询时，由于在 `MYSQL` 严格模式下，`SELECT` 语句中的 `GROUP BY` 子句与 `SELECT` 子句中的字段不一致时，会抛出错误，所以我们可以通过临时开启非严格模式进行查询。
+
+首先在需要进行非严格模式查询的模型中引入 `\Yesccx\BetterLaravel\Database\Traits\UnStrictQuery`，再使用 `unStrictQuery` 方法进行查询操作：
+
+``` php
+User::unStrictQuery()->select(['id'])->groupBy('name')->first();
+```
+
+> !!! 注意目前只能以这种方式对模型进行非严格模式查询，不支持在事务中进行非严格模式更新操作。
+
 # HTTP
 
 ## 请求响应(Responser)
