@@ -27,6 +27,10 @@
       - [Class::instance](#classinstance)
     - [InitializeTraits](#initializetraits)
   - [BaseService](#baseservice)
+  - [辅助方法](#辅助方法)
+    - [dumps](#dumps)
+    - [dds](#dds)
+    - [explode\_str\_array](#explode_str_array)
 - [数据库](#数据库)
   - [分页查询](#分页查询)
     - [普通分页查询](#普通分页查询)
@@ -366,6 +370,63 @@ class User {
 `Better-Laravel` 中提供了 `Service` 层基类 `Yesccx\BetterLaravel\Service\BaseService`，其中引入了 `InstanceMake Trait`。
 
 业务项目开发过程中，可以示情况进行继承使用。
+
+## 辅助方法
+
+### dumps
+
+类似 `Laravel` 中的 `dump` 方法，输出更精简的信息
+
+``` php
+/**
+ * dump wrapper
+ * PS: 自动对集合做toArray
+ *
+ * @param mixed $vars
+ *
+ * @return void
+ */
+function dumps(mixed ...$vars): void;
+```
+
+### dds
+
+类似 `Laravel` 中的 `dd` 方法，输出更精简的信息
+
+``` php
+/**
+ * dd wrapper
+ * PS: 自动对集合做toArray
+ *
+ * @param mixed $vars
+ *
+ * @return void
+ */
+function dds(mixed ...$vars): void;
+```
+
+### explode_str_array
+
+分割字符串数组
+
+``` php
+/**
+ * 分割字符串数组
+ *
+ * @param string $str
+ * @param string $separator 分割符(默认,)
+ *
+ * @return array
+ */
+function explode_str_array(string $str, string $separator = ','): array;
+```
+
+示例如下：
+
+``` php
+$arr = explode_str_array('a,b,c');
+// ["a", "b", "c"]
+```
 
 # 数据库
 
