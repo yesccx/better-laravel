@@ -28,16 +28,4 @@ final class BetterLaravelProvider extends BetterLaravelApplicationServiceProvide
 
         // Do something ...
     }
-
-    /**
-     * 立即响应的异常，不经过判断处理
-     *
-     * @return array
-     */
-    protected function immediateExceptions(): array
-    {
-        return [
-            // Do something...
-        ];
-    }
 }

@@ -35,6 +35,10 @@ class BetterLaravelServiceProvider extends ServiceProvider
     public function register()
     {
         $this->configure();
+
+        $this->registerDependencies();
+
+        $this->defineCarbonFormat();
     }
 
     /**
@@ -44,10 +48,6 @@ class BetterLaravelServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->registerDependencies();
-
-        $this->defineCarbonFormat();
-
         $this->registerCommands();
 
         $this->registerPublishing();

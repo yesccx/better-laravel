@@ -13,6 +13,7 @@
   - [运行环境](#运行环境)
   - [通过Composer引入依赖包](#通过composer引入依赖包)
   - [初始化安装](#初始化安装)
+  - [定义异常处理](#定义异常处理)
 - [基础功能](#基础功能)
   - [路由](#路由)
     - [模块路由](#模块路由)
@@ -110,6 +111,36 @@
 ```
 
 > 初始化之后会默认引入使用服务提供者 `App\Providers\BetterLaravelProvider`，后续可在该提供者内部做更多的定制化处理。
+
+## 定义异常处理
+
+当需要使用 `Better-Laravel` 中的异常处理逻辑，仅需在 `\App\Exceptions\Handler@register` 中调用 `\Yesccx\BetterLaravel\Exceptions\ExceptionHandlerManager::register` 即可：
+
+``` php
+<?php
+
+namespace App\Exceptions;
+
+use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Yesccx\BetterLaravel\Exceptions\ExceptionHandlerManager;
+
+class Handler extends ExceptionHandler
+{
+    /**
+     * Register the exception handling callbacks for the application.
+     *
+     * @return void
+     */
+    public function register()
+    {
+        ExceptionHandlerManager::register($this);
+
+        // Do something....
+    }
+}
+```
+
+> 更多详情可以参考 [异常处理](#异常处理) 章节
 
 # 基础功能
 
@@ -230,6 +261,30 @@ Route::group([
 
 在 `Better-Laravel` 中对异常类进行了统一的捕获处理，对异常信息进行脱敏后再以标准的接口响应方式响应异常信息([`Responser`](#请求响应(Responser)))，从而提高了应用的安全性和规范性。
 
+如果想使用 `Better-Laravel` 的异常处理，只需要在 `\App\Exceptions\Handler@register` 中调用 `\Yesccx\BetterLaravel\Exceptions\ExceptionHandlerManager::register` 即可，示例如下：
+
+``` php
+<?php
+
+namespace App\Exceptions;
+
+use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Yesccx\BetterLaravel\Exceptions\ExceptionHandlerManager;
+
+class Handler extends ExceptionHandler
+{
+    /**
+     * Register the exception handling callbacks for the application.
+     *
+     * @return void
+     */
+    public function register()
+    {
+        ExceptionHandlerManager::register($this);
+    }
+}
+```
+
 其中捕获的 `Laravel内部异常` 有：
 
 - `NotFoundHttpException`：请求的接口地址不存在异常；
@@ -251,9 +306,7 @@ Route::group([
 但某些时候我们会自定义业务异常类，如果希望在捕获到这类异常后，将异常原因直接返回给客户端，我们可以通过以下方式进行：
 
 - 方式一：业务异常类实现 `Yesccx\BetterLaravel\Contracts\WithExceptionOptions` 接口，并在 `exceptionOptions` 方法中指定不忽略异常栈详情 `["ignore_tracts" => false]` ；
-- 方式二：通过将业务异常类 声明至 `App\Providers\BetterLaravelProvider` 中的 `immediateExceptions` 方法内，该方法中声明的异常将不会忽略异常栈信息。
-
-如果您需要禁用这些异常处理逻辑或深度定制化异常处理逻辑，您可以选择在 `App\Providers\BetterLaravelProvider` 中移除这一部分处理逻辑。
+- 方式二：将自定义异常类名传递给 `ExceptionHandlerManager::register` 方法的第二个参数 `immediateExceptions`。
 
 > 默认情况下会自动记录异常原因至日志文件中。
 
