@@ -27,5 +27,5 @@ final class ResponseCode
     /**
      * 失败响应码
      */
-    public const ERROR_CODE = 400403;
+    public const ERROR_CODE = 404;
 }

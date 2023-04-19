@@ -59,13 +59,19 @@ class Responder implements HttpResponderContract
      * @return JsonResponse
      */
     public function responseSuccess(
-        mixed $message = ResponseCode::SUCCESS_MESSAGE,
+        mixed $message = null,
         mixed $data = [],
-        mixed $code = ResponseCode::SUCCESS_CODE,
+        mixed $code = null,
         array $headers = [],
         int $options = 0
     ): JsonResponse {
-        return $this->toResponse($message, $code, $data, $headers, $options);
+        return $this->toResponse(
+            $message ?? $this->resolveDefaultValue(ResponseCode::SUCCESS_MESSAGE),
+            $code ?? $this->resolveDefaultValue(ResponseCode::SUCCESS_CODE),
+            $data,
+            $headers,
+            $options
+        );
     }
 
     /**
@@ -80,13 +86,19 @@ class Responder implements HttpResponderContract
      * @return JsonResponse
      */
     public function responseError(
-        mixed $message = ResponseCode::ERROR_MESSAGE,
-        mixed $code = ResponseCode::ERROR_CODE,
+        mixed $message = null,
+        mixed $code = null,
         mixed $data = [],
         array $headers = [],
         int $options = 0
     ): JsonResponse {
-        return $this->toResponse($message, $code, $data, $headers, $options);
+        return $this->toResponse(
+            $message ?? $this->resolveDefaultValue(ResponseCode::ERROR_MESSAGE),
+            $code ?? $this->resolveDefaultValue(ResponseCode::ERROR_CODE),
+            $data,
+            $headers,
+            $options
+        );
     }
 
     /**
@@ -116,8 +128,8 @@ class Responder implements HttpResponderContract
                 default                    => $options['ignored_summary'] ?: '系统错误'
             },
             code: match (true) {
-                (bool) $options['use_exception_code'] => $e->getCode() ?: ResponseCode::ERROR_CODE,
-                default                               => ResponseCode::ERROR_CODE
+                (bool) $options['use_exception_code'] => $e->getCode() ?: null,
+                default                               => null
             }
         );
     }
@@ -138,9 +150,9 @@ class Responder implements HttpResponderContract
     public function responseData(
         mixed $data = [],
         string|bool $resource = false,
-        mixed $message = ResponseCode::SUCCESS_MESSAGE,
+        mixed $message = null,
         bool $isCollection = false,
-        mixed $code = ResponseCode::SUCCESS_CODE,
+        mixed $code = null,
         array $headers = [],
         int $options = 0
     ): JsonResponse {
@@ -162,6 +174,20 @@ class Responder implements HttpResponderContract
             default => new $resource($data)
         };
 
-        return $this->toResponse($message, $code, $data, $headers, $options);
+        return $this->responseSuccess($message, $data, $code, $headers, $options);
+    }
+
+    /**
+     * @param mixed $normal
+     *
+     * @return mixed
+     */
+    protected function resolveDefaultValue(mixed $normal): mixed
+    {
+        try {
+            return config('better-laravel.http.message_body_map', [])[$normal] ?? $normal;
+        } catch(\Throwable) {
+            return $normal;
+        }
     }
 }

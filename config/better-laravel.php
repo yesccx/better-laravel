@@ -22,6 +22,8 @@ return [
                 ],
             ],
         ],
+
+        'message_body_map' => [],
     ],
 
     /**

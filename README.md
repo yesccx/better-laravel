@@ -81,6 +81,7 @@
 - [配置项](#配置项)
   - [date\_format](#date_format)
   - [http.route\_scanning](#httproute_scanning)
+  - [http.message\_body\_map](#httpmessage_body_map)
 - [使用建议](#使用建议)
 - [License](#license)
 
@@ -962,7 +963,26 @@ User::unStrictQuery()->select(['id'])->groupBy('name')->first();
 }
 ```
 
-> 如果想调整默认响应结构或扩展其功能，可以对 `\Yesccx\BetterLaravel\Http\Responder` 类进行重写，并在 `better-laravel.binds` 配置文件中重新定义映射关系。
+默认情况下响应体中的 响应码(code)为 `200` 或 `404` ，响应文案(message)为 `操作成功` 或 `操作失败` ，可以通过 `better-laravel.http.message_body_map` 重定义：
+
+``` php
+<?php
+    // ...
+
+    'http' => [
+        'message_body_map' => [
+            \Yesccx\BetterLaravel\Http\Supports\ResponseCode::SUCCESS_CODE    => 200,
+            \Yesccx\BetterLaravel\Http\Supports\ResponseCode::ERROR_CODE      => 400403,
+            \Yesccx\BetterLaravel\Http\Supports\ResponseCode::SUCCESS_MESSAGE => 'success',
+            \Yesccx\BetterLaravel\Http\Supports\ResponseCode::ERROR_MESSAGE   => 'error',
+        ]
+    ]
+
+    // ...
+]
+```
+
+> 如果想调整默认响应结构或扩展其他功能，可以对 `\Yesccx\BetterLaravel\Http\Responder` 类进行重写，并在 `better-laravel.binds` 配置文件中重新定义映射关系。
 
 ### responseSuccess
 
@@ -981,9 +1001,9 @@ User::unStrictQuery()->select(['id'])->groupBy('name')->first();
  * @return JsonResponse
  */
 responseSuccess(
-    mixed $message = ResponseCode::SUCCESS_MESSAGE,
+    mixed $message = null,
     mixed $data = [],
-    mixed $code = ResponseCode::SUCCESS_CODE,
+    mixed $code = null,
     array $headers = [],
     int $options = 0
 ): JsonResponse;
@@ -1006,8 +1026,8 @@ responseSuccess(
  * @return JsonResponse
  */
 responseError(
-    mixed $message = ResponseCode::ERROR_MESSAGE,
-    mixed $code = ResponseCode::ERROR_CODE,
+    mixed $message = null,
+    mixed $code = null,
     mixed $data = [],
     array $headers = [],
     int $options = 0
@@ -1035,9 +1055,9 @@ responseError(
 responseData(
     mixed $data = [],
     string|bool $resource = false,
-    mixed $message = ResponseCode::SUCCESS_MESSAGE,
+    mixed $message = null,
     bool $isCollection = false,
-    mixed $code = ResponseCode::SUCCESS_CODE,
+    mixed $code = null,
     array $headers = [],
     int $options = 0
 ): JsonResponse;
@@ -1445,6 +1465,10 @@ public function __construct(
 ## http.route_scanning
 
 定义 `模块路由` 的扫描文件夹，可以定义多个。同时支持通过 `options` 配置路由参数。
+
+## http.message_body_map
+
+定义响应体中的默认响应码 `code` 与 默认响应文案 `message`
 
 待补充完善...
 

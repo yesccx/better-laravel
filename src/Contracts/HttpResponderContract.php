@@ -5,7 +5,6 @@ declare(strict_types = 1);
 namespace Yesccx\BetterLaravel\Contracts;
 
 use Illuminate\Http\JsonResponse;
-use Yesccx\BetterLaravel\Http\Supports\ResponseCode;
 
 interface HttpResponderContract
 {
@@ -29,7 +28,7 @@ interface HttpResponderContract
      *
      * @return JsonResponse
      */
-    public function responseSuccess(mixed $message = ResponseCode::SUCCESS_MESSAGE, mixed $data = [], mixed $code = ResponseCode::SUCCESS_CODE, array $headers = [], int $options = 0): JsonResponse;
+    public function responseSuccess(mixed $message = null, mixed $data = [], mixed $code = null, array $headers = [], int $options = 0): JsonResponse;
 
     /**
      * 响应失败信息
@@ -42,7 +41,7 @@ interface HttpResponderContract
      *
      * @return JsonResponse
      */
-    public function responseError(mixed $message = ResponseCode::ERROR_MESSAGE, mixed $code = ResponseCode::ERROR_CODE, mixed $data = [], array $headers = [], int $options = 0): JsonResponse;
+    public function responseError(mixed $message = null, mixed $code = null, mixed $data = [], array $headers = [], int $options = 0): JsonResponse;
 
     /**
      * 响应异常信息
@@ -67,5 +66,5 @@ interface HttpResponderContract
      *
      * @return JsonResponse
      */
-    public function responseData(mixed $data = [], string|bool $resource = false, mixed $message = ResponseCode::SUCCESS_MESSAGE, bool $isCollection = false, mixed $code = ResponseCode::SUCCESS_CODE, array $headers = [], int $options = 0): JsonResponse;
+    public function responseData(mixed $data = [], string|bool $resource = false, mixed $message = null, bool $isCollection = false, mixed $code = null, array $headers = [], int $options = 0): JsonResponse;
 }

@@ -6,7 +6,6 @@ namespace Yesccx\BetterLaravel\Http\Traits;
 
 use Illuminate\Http\JsonResponse;
 use Yesccx\BetterLaravel\Contracts\HttpResponderContract;
-use Yesccx\BetterLaravel\Http\Supports\ResponseCode;
 
 /**
  * Http响应
@@ -25,9 +24,9 @@ trait HttpResponse
      * @return JsonResponse
      */
     public function responseSuccess(
-        mixed $message = ResponseCode::SUCCESS_MESSAGE,
+        mixed $message = null,
         mixed $data = [],
-        mixed $code = ResponseCode::SUCCESS_CODE,
+        mixed $code = null,
         array $headers = [],
         int $options = 0
     ): JsonResponse {
@@ -46,8 +45,8 @@ trait HttpResponse
      * @return JsonResponse
      */
     public function responseError(
-        mixed $message = ResponseCode::ERROR_MESSAGE,
-        mixed $code = ResponseCode::ERROR_CODE,
+        mixed $message = null,
+        mixed $code = null,
         mixed $data = [],
         array $headers = [],
         int $options = 0
@@ -71,9 +70,9 @@ trait HttpResponse
     public function responseData(
         mixed $data = [],
         string|bool $resource = false,
-        mixed $message = ResponseCode::SUCCESS_MESSAGE,
+        mixed $message = null,
         bool $isCollection = false,
-        mixed $code = ResponseCode::SUCCESS_CODE,
+        mixed $code = null,
         array $headers = [],
         int $options = 0
     ): JsonResponse {
