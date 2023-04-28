@@ -9,7 +9,7 @@ use Yesccx\BetterLaravel\Rules\BaseRule;
 /**
  * 数组id集验证
  */
-final class ArrayIdsRule implements BaseRule
+final class ArrayIdsRule extends BaseRule
 {
     /**
      * @param bool $allowZero 值允许为0

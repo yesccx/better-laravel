@@ -9,7 +9,7 @@ use Yesccx\BetterLaravel\Rules\BaseRule;
 /**
  * 字符串数组id集验证
  */
-class StringArrayIdsRule implements BaseRule
+class StringArrayIdsRule extends BaseRule
 {
     /**
      * @param string $separator 分隔符
@@ -54,7 +54,7 @@ class StringArrayIdsRule implements BaseRule
             return false;
         }
 
-        return (new ArrayIds(
+        return (new ArrayIdsRule(
             allowZero: $this->allowZero,
             allowNegativeNumber: $this->allowNegativeNumber,
             allowFloatNumber: $this->allowFloatNumber,

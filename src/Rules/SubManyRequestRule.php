@@ -9,7 +9,7 @@ use Yesccx\BetterLaravel\Rules\BaseRule;
 /**
  * 子表单集合验证
  */
-final class SubManyRequestRule implements BaseRule
+final class SubManyRequestRule extends BaseRule
 {
     /**
      * 错误信息
