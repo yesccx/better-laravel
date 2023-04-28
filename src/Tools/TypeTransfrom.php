@@ -59,7 +59,9 @@ final class TypeTransfrom
      */
     public function transfrom(mixed $data, string $type, mixed $default = null): mixed
     {
-        if (is_null($data) || empty($type)) {
+        if (empty($type)) {
+            return $data;
+        } else if (is_null($data)) {
             return $default;
         }
 
