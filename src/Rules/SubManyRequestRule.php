@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace Yesccx\BetterLaravel\Rules;
 
-use Yesccx\BetterLaravel\Rules\BaseRule;
+use Illuminate\Support\Facades\Validator;
 
 /**
  * 子表单集合验证
@@ -38,8 +38,15 @@ final class SubManyRequestRule extends BaseRule
      */
     public function passes($attribute, $value)
     {
-        return collect($value)->filter(function ($item)  {
-            $validator = $this->subRequest::make($item);
+        return !collect($value)->contains(function ($item) {
+            $subRequestInstance = new $this->subRequest;
+
+            $validator = Validator::make(
+                (array) $item,
+                $subRequestInstance->rules(),
+                $subRequestInstance->messages(),
+                $subRequestInstance->attributes()
+            );
 
             return tap(
                 $validator->fails(),

@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Yesccx\BetterLaravel\Rules;
 
 use Yesccx\BetterLaravel\Rules\BaseRule;
+use Illuminate\Support\Facades\Validator;
 
 /**
  * 子表单验证
@@ -38,12 +39,19 @@ final class SubRequestRule extends BaseRule
      */
     public function passes($attribute, $value)
     {
-        $validator = $this->subRequest::make($value);
+        $subRequestInstance = new $this->subRequest;
 
-        return match (!$validator->fails()) {
-            false   => $this->fail($validator->errors()->first()),
-            default => true
-        };
+        $validator = Validator::make(
+            (array) $value,
+            $subRequestInstance->rules(),
+            $subRequestInstance->messages(),
+            $subRequestInstance->attributes()
+        );
+
+        return tap(
+            !$validator->fails(),
+            fn () => $this->fail($validator->errors()->first())
+        );
     }
 
     /**
