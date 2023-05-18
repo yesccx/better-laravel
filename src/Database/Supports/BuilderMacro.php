@@ -277,7 +277,7 @@ final class BuilderMacro
 
             $month = Carbon::make($month);
 
-            return $this->whereBetweenDate($field, $month->startOfMonth(), $month->endOfMonth(), forceFullDay: true);
+            return $this->whereBetweenDate($field, $month->clone()->startOfMonth(), $month->clone()->endOfMonth(), forceFullDay: true);
         };
     }
 
@@ -312,7 +312,7 @@ final class BuilderMacro
 
             $year = Carbon::make($year);
 
-            return $this->whereBetweenDate($field, $year->startOfYear(), $year->endOfYear(), forceFullDay: true);
+            return $this->whereBetweenDate($field, $year->clone()->startOfYear(), $year->clone()->endOfYear(), forceFullDay: true);
         };
     }
 
