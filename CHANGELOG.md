@@ -1,3 +1,9 @@
+## v1.0.7
+
+### Fix
+
+- 模型的whereInYear、whereInMonth查询逻辑问题
+
 ## v1.0.6
 
 ### Fix
