@@ -1,3 +1,9 @@
+## v1.0.8
+
+### Chore
+
+- IdeHelpers comment
+
 ## v1.0.7
 
 ### Fix
