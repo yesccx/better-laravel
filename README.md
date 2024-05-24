@@ -27,6 +27,7 @@
       - [Class::resolve](#classresolve)
       - [Class::instance](#classinstance)
     - [InitializeTraits](#initializetraits)
+    - [WithRescue](#withrescue)
   - [BaseService](#baseservice)
   - [辅助方法](#辅助方法)
     - [dumps](#dumps)
@@ -424,6 +425,60 @@ class User {
     }
 }
 ```
+
+### WithRescue
+
+`Laravel` 中内置助手函数 [`rescue`](https://learnku.com/docs/laravel/9.x/helpers/12230#method-rescue)，作用是接收一个闭包并执行，当过程中发生异常时报告异常并返回指定的默认值。
+
+这通常用于某些不可控的场景中，例如我们想执行某些代码并取到其结果，但不想因过程中的异常而导致代码执行中断，这时就可以通过使用 `rescue` 来代替 `tray...catch` 。
+
+`Better-Laravel` 中实现了 `WithRescue Trait`，可以方便的在类中使用该功能。`WithRescue` 内部会代理类的原始对象，最终以类似上述 `rescue` 的方式调用实际方法，示例如下：
+
+``` php
+class Foo {
+    use \Yesccx\BetterLaravel\Traits\WithRescue;
+
+    /**
+     * @param int|float $num1
+     * @param int|float $num2
+     *
+     * @return int|float
+     * @throws \Throwable
+     */
+    public function getData(int|float $num1, int|float $num2): int|float
+    {
+        return $num1 / $num2;
+    }
+}
+
+$foo = new Foo;
+
+$foo->getData(1, 1); // return: 1
+$foo->getData(1, 0); // Exception: Division by zero
+```
+
+上述 `getData` 因除数为0的缘故而抛出异常，此时可以通过链式调用 `withRescue` 的方式，对实际要调用的方法进行'rescue' ：
+
+``` php
+$foo->withRescue()->getData(1, 1); // return: 1
+$foo->withRescue()->getData(1, 0); // return: null
+$foo->withRescue(-1)->getData(1, 0); // return: -1
+```
+
+还可以通过类中的代理对象进行调用，但这种方式不支持指定默认值等参数：
+
+``` php
+$foo->rescue->getData(1, 0); // return: null
+```
+
+不仅如此，Trait中还实现了 `__invoke` 方法，使用方式还可以进一步精简：
+
+```php
+$foo()->getData(1, 0); // return: null
+
+$foo(-1)->getData(1, 0); // return: -1
+```
+
 
 ## BaseService
 
