@@ -1,3 +1,9 @@
+## v1.1.0
+
+### Feature
+
+- Additional WithResource trait
+
 ## v1.0.8
 
 ### Chore
