@@ -77,10 +77,8 @@ class CustomPaginator extends Paginator implements CustomPaginatorContract
      *
      * @param mixed $items
      * @param null|int $perPage
-     * @param null|int $currentPage
-     * @param array $options (path, query, fragment, pageName)
+     * @param null|int $page
      * @param bool $fetchAll 标识是否取回所有数据
-     * @param ?int $page
      * @return self
      */
     public static function resolve(

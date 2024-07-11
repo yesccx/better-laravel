@@ -45,7 +45,7 @@ final class TypeTransfrom
      * 类型转换
      *
      * @param mixed $data 值
-     * @param mixed $type 类型
+     * @param string $type 类型
      *                    - (a)array 数组
      *                    - (n)number 数值
      *                    - (i)int 整数

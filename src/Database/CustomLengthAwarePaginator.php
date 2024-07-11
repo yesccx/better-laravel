@@ -80,10 +80,8 @@ class CustomLengthAwarePaginator extends LengthAwarePaginator implements CustomL
      * @param mixed $items
      * @param int $total
      * @param null|int $perPage
-     * @param null|int $currentPage
-     * @param array $options (path, query, fragment, pageName)
+     * @param null|int $page
      * @param bool $fetchAll 标识是否取回所有数据
-     * @param ?int $page
      * @return self
      */
     public static function resolve(
