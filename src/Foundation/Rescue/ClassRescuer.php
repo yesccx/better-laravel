@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Gupo\BetterLaravel\Foundation\Rescue;
+namespace Yesccx\BetterLaravel\Foundation\Rescue;
 
 final class ClassRescuer
 {

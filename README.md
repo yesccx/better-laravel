@@ -79,6 +79,15 @@
     - [StringArrayIdsRule](#stringarrayidsrule)
     - [SubManyRequestRule](#submanyrequestrule)
     - [SubRequestRule](#subrequestrule)
+- [工具类](#工具类)
+  - [运行环境检测](#运行环境检测)
+    - [Environment](#environment)
+      - [verified](#verified)
+      - [notVerified](#notverified)
+      - [when](#when)
+      - [whenNot](#whennot)
+      - [wrapStr](#wrapstr)
+    - [助手函数](#助手函数)
 - [配置项](#配置项)
   - [date\_format](#date_format)
   - [http.route\_scanning](#httproute_scanning)
@@ -1505,6 +1514,123 @@ public function __construct(
     protected string $subRequest
 );
 ```
+
+# 工具类
+
+## 运行环境检测
+
+应用通常会部署在多个不同的环境下，如 `UAT环境` 、`灰度环境`、`生产环境` 等，当在不同的环境中运行时可能需要做一些不同的逻辑处理。例如在 `灰度环境` 下禁用 `CRON(计划任务)`，又或者为了隔离 `生产环境` 与 `灰度环境` 的缓存而设置不同的缓存前缀等。
+
+利用 `Better-Laravel` 内部实现的 `灰度环境(GrayEnvironment)` 类与 `生产环境(ProdEnvironment)` 类可以轻松处理这些情况。
+
+这些类都继承自 `Yesccx\BetterLaravel\Foundation\Environment` 类，所以如果需要，我们也可以自定义一个新的环境类并继承该基类，满足个性化需求。
+
+### Environment
+
+抽象类 `环境基类` 方法
+
+#### verified
+
+判断是否为当前环境.
+
+``` php
+public function verified(): bool;
+```
+
+示例：
+
+```php
+# gray environment
+
+GrayEnvironment::instance()->verified();
+// true
+
+ProdEnvironment::instance()->verified();
+// false
+```
+
+#### notVerified
+
+判断是否为非当前环境，为 `verified` 方法的反向判定.
+
+``` php
+public function notVerified(): bool;
+```
+
+#### when
+
+为当前环境时执行一个闭包（如果需要，也可以获取到这个闭包的返回值）.
+
+``` php
+public function when(callable $handler, mixed $default): mixed;
+```
+
+示例：
+
+``` php
+# gray environment
+
+GrayEnvironment::instance()->when(
+    fn () => 'is gray'
+);
+// is gray
+
+ProdEnvironment::instance()->when(
+    fn () => 'is prod'
+);
+// null
+
+GrayEnvironment::instance()->when(
+    fn () => 'is gray',
+    fn () => 'is not gray'
+);
+// is gray
+```
+
+#### whenNot
+
+不为当前环境时执行一个闭包，为 `when` 方法的反向判定.
+
+``` php
+public function whenNot(callable $handler, mixed $default): mixed;
+```
+
+#### wrapStr
+
+为当前环境时，对字符串进行包装处理，添加名为环境值的前缀.
+
+``` php
+public function wrapStr(string $value): string;
+```
+
+示例：
+
+``` php
+# gray environment
+
+GrayEnvironment::make()->wrapStr('xxx'); // gray:xxx
+ProdEnvironment::make()->wrapStr('xxx'); // xxx
+```
+
+``` php
+# prod environment
+
+GrayEnvironment::make()->wrapStr('xxx'); // xxx
+ProdEnvironment::make()->wrapStr('xxx'); // prod:xxx
+```
+
+### 助手函数
+
+- `gray_environment` alias `GrayEnvironment::instance()`
+- `is_gray_environment` alias `GrayEnvironment::instance()->verified()`
+- `when_gray_environment` alias `GrayEnvironment::instance()->when()`
+- `when_not_gray_environment` alias `GrayEnvironment::instance()->whenNot()`
+- `prod_environment` alias `ProdEnvironment::instance()`
+- `is_prod_environment` alias `GrayEnvironment::instance()->verified()`
+- `when_prod_environment` alias `GrayEnvironment::instance()->when()`
+- `when_not_prod_environment` alias `GrayEnvironment::instance()->whenNot()`
+
+
 
 # 配置项
 

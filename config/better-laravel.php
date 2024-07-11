@@ -74,4 +74,24 @@ return [
          */
         \Yesccx\BetterLaravel\Contracts\HttpResponderContract::class => \Yesccx\BetterLaravel\Http\Responder::class,
     ],
+
+    /**
+     * 运行时配置
+     */
+    'runtime' => [
+        /**
+         * 环境键
+         */
+        'environment_key'   => env('YBL_RUNTIME_ENVIRONMENT_KEY', 'CLOUDLADDER_DEPLOY_ENV'),
+
+        /**
+         * 灰度环境值
+         */
+        'gray_environment_value' => env('YBL_RUNTIME_GRAY_ENVIRONMENT_VALUE', 'gray'),
+
+        /**
+         * 生产环境值
+         */
+        'prod_environment_value' => env('YBL_RUNTIME_PROD_ENVIRONMENT_VALUE', 'prod'),
+    ]
 ];
