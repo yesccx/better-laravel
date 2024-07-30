@@ -39,6 +39,8 @@ class BetterLaravelServiceProvider extends ServiceProvider
         $this->registerDependencies();
 
         $this->defineCarbonFormat();
+
+        $this->registerProbeRoutes();
     }
 
     /**
@@ -83,6 +85,18 @@ class BetterLaravelServiceProvider extends ServiceProvider
         Carbon::setLocale('zh');
         Carbon::serializeUsing(function (Carbon $data) {
             return $data->rawFormat(config('better-laravel.date_format'));
+        });
+    }
+
+    /**
+     * 注册探针路由
+     *
+     * @return void
+     */
+    protected function registerProbeRoutes(): void
+    {
+        $this->booted(function () {
+            Route::get('ping', fn () => 'pong');
         });
     }
 
